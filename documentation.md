@@ -46,6 +46,53 @@ On parle aussi d'indel en bio-informatique pour désigner une insertion ou une d
 **Inversion :** Une partie de la séquence est inversée (ex : ATCG devient TACG)
 **Translocation :** Une portion de la séquence change de position soit dans le même chromosome, soit dans un autre.
 
+### Séquencage ADN
+
+L’ADN est une très longue séquence (jusqu’à des milliards de nucléotides) et donc les machines ne peuvent pas le lire directement. C'est pourquoi on va fragmenter l’ADN en petits morceaux appelés reads et chaque read est séquencé individuellement. Ensuite on obtient des millions de reads (fichier FASTQ).
+Enfin on peut procéder à deux étapes finales : 
+- Soit on assemble les reads 
+- Soit on les aligne sur le génome de référence (Notion de position)
+TODO To complete
+
+**Position :** Quand on parle de position, on parle d'un endroit spécifique dans le génome qu'on peut qualifier comme : chr1:1000 et qui signifie base 1000 du chromosome 1, ce qui veut dire que la séquence commence à la position 1000 du chromosome 1. 
+Après alignement, chaque read possède une position (fichier BAM). Quand on parle d'alignement c'est quand on confronte le read actuel avec la séquence d'origine pour connaître sa position de départ (modulo quelques variations j'imagine).
+
+### Types de fichier 
+
+**Fichier FASTQ :** C’est le format brut du séquençage, chaque read contient son identifiant ainsi que sa séquence. Exemple : 
+```
+>read1
+ATCGTAGTAGTCGATCGTAGCGACTT
+>read2
+ATCGTGCTGCCCCAAATTGTGGCTGT
+[...]
+```
+Concrètement, les fichiers FASTQ contiennent les reads non alignés.
+
+**Fichier BAM :** 
+C'est "l'étape suivante" de FASTQ, on va y retrouver les reads alignés sur le génome de référence ce qui inclut dorénavant la position en plus d'un identifiant ainsi que d'une séquence.
+
+### Léviathan
+Léviathan est un outil en bioinformatique assez proche de LRez. Il permet de détecter des liens entre régions génomiques à partir des barcodes. Concrètement Léviathan répond à la question suivante : "Est-ce que deux régions partagent beaucoup de barcodes ?". 
+
+Comment fonctionne-t'il ? De ce que j'ai compris il récupère les données liées à un fichier BAM, ensuite il associe des régions à des ensembles de barcodes, puis il procède à l'intersection des différents ensembles et enfin il en déduit si oui ou non les régions sont liées en fonction des résultats.
+
+Il permet de faire beaucoup de choses en lien avec le séquencage d'ADN : 
+- Relier les contigs, par exemple si deux régions partagent des barcodes alors elles sont probablement voisines
+- Détecter les variations structurelles, par exemple si deux régions très éloignées partagent des barcodes alors il y a une possiblie translocation
+- Analyser la cohérence du génome en vérifiant si l'assemblage est "logique"
+
+L'outil ne regarde pas directement les séquences mais se base uniquement sur les barcodes et leurs relations.
+
+### Léviathan & LRez
+
+Les deux outils reposent sur le même principe mais ne font pas exactement la même chose.
+Ils utilisent tous les deux les linked-reads, les barcodes, les fichiers BAM et des comparaisons d’ensembles de barcodes. En effet ils partagent une même logique scientifique.
+
+Cependant Léviathan est un outil spécifique conçu pour une tâche précise : trouver des liens entre régions ou détecter des variations structurelles. On a un pipeline déjà défini et on l'utilise pour une analyse donnée.
+En comparaison, LRez est un outil plus générique qui est plutôt une bibliothèque en CLI qui permet d'extraire des barcodes, indexer des données, faire des requêtes et calculer des stats.
+
+
 ## Organisation générale du projet
 
 Le dépôt est organisé autour de plusieurs dossiers qui n'ont pas tous le même rôle. Certains contiennent le code développé pour LRez, tandis que d'autres correspondent à des dépendances externes ou à de la documentation générée.
