@@ -52,7 +52,6 @@ L’ADN est une très longue séquence (jusqu’à des milliards de nucléotides
 Enfin on peut procéder à deux étapes finales : 
 - Soit on assemble les reads 
 - Soit on les aligne sur le génome de référence (Notion de position)
-TODO To complete
 
 **Position :** Quand on parle de position, on parle d'un endroit spécifique dans le génome qu'on peut qualifier comme : chr1:1000 et qui signifie base 1000 du chromosome 1, ce qui veut dire que la séquence commence à la position 1000 du chromosome 1. 
 Après alignement, chaque read possède une position (fichier BAM). Quand on parle d'alignement c'est quand on confronte le read actuel avec la séquence d'origine pour connaître sa position de départ (modulo quelques variations j'imagine).
@@ -312,7 +311,7 @@ En résumé, `utils` sert à préparer les données quand elles ne sont pas dire
 
 Ce dossier contient la documentation HTML générée du projet.
 
-Ce n'est pas du code source à modifier en priorité. Il s'agit plutôt d'une documentation produite automatiquement, probablement avec Doxygen, à partir des commentaires du code C++.
+Ce n'est pas du code source à modifier en priorité pour le transfert en Rust je pense. Il s'agit plutôt d'une documentation produite automatiquement à partir des commentaires du code C++.
 
 Elle permet :
 
@@ -376,3 +375,8 @@ Ce fichier indique que le projet utilise des sous-modules Git, ici :
 
 - `bamtools`
 - `CTPL`
+
+
+## Transformation de LRez C++ vers LRez Rust
+
+Pour l'instant je n'ai pas eu le temps de beaucoup y réfléchir.
