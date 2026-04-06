@@ -43,7 +43,7 @@ On parle aussi d'indel en bio-informatique pour désigner une insertion ou une d
 ##### Variations structurelles
 
 **Duplication :** Copie d'une portion d'ADN (ex : ATTGA devient ATTGAATTGA)
-**Inversion :** Une partie de la séquence est inversée (ex : ATCG devient TACG)
+**Inversion :** Une partie de la séquence est inversée. Prenons un exemple : ATCG. L'inversion de ATCG est le complément de la séquence inversée. On prend son complément qui est TAGC, son inverse c'est GCTA puis le complément de la séquence inversé, noté comp(GCTA), est CGAT.
 **Translocation :** Une portion de la séquence change de position soit dans le même chromosome, soit dans un autre.
 
 ## Organisation générale du projet
@@ -252,7 +252,7 @@ Utilité :
 
 Ce dossier contient des scripts utilitaires en Python.
 
-Ils ne font pas partie du cœur C++ de LRez, mais ils sont utiles pour préparer certaines données en entrée. D'après le projet, ces scripts servent surtout au prétraitement de fichiers issus de certaines technologies de séquençage barcodé, comme :
+Ils ne font pas partie du cœur C++ de LRez, mais ils sont utiles pour préparer certaines données en entrée. De ce que j'ai compris, ces scripts servent surtout au prétraitement de fichiers issus de certaines technologies de séquençage barcodé, comme :
 
 - stLFR
 - TELL-Seq.
@@ -265,7 +265,7 @@ En résumé, `utils` sert à préparer les données quand elles ne sont pas dire
 
 Ce dossier contient la documentation HTML générée du projet.
 
-Ce n'est pas du code source à modifier en priorité. Il s'agit plutôt d'une documentation produite automatiquement, probablement avec Doxygen, à partir des commentaires du code C++.
+Ce n'est pas du code source à modifier en priorité en Rust j'imagine. Il s'agit plutôt d'une documentation produite automatiquement à partir des commentaires du code C++.
 
 Elle permet :
 
@@ -329,3 +329,39 @@ Ce fichier indique que le projet utilise des sous-modules Git, ici :
 
 - `bamtools`
 - `CTPL`
+
+## Idées pour transformer le code C++ en Rust
+
+Pour l'instant je n'y ai pas encore réfléchi
+
+### Notions à travailler pour la transformation en Rust
+
+#### Structure de données stockant les données de mapping (BAM)
+
+TODO
+
+#### Les différentes étapes de Leviathan et comment l'index est utilisé ?
+
+TODO
+
+#### Quelles sont les autres structures de données utilisées ?
+
+TODO
+
+#### Alternatives Rust aux libraries bamtools et CTPL
+
+##### bamtools
+
+**rust-htslib** - https://docs.rs/rust-htslib/latest/rust_htslib/ :
+Ca suit l’écosystème HTS “classique”, car la crate fournit des bindings vers HTSlib avec une API Rust de plus haut niveau. Elle gère SAM, BAM et CRAM, propose la lecture/écriture, un IndexedReader pour les requêtes par région, et même un support de thread pool côté I/O/compression.
+
+**noodles-bam** - https://docs.rs/noodles-bam/latest/noodles_bam/ :
+C’est une alternative plus dans l'esprit de comment est codé Rust de ce que j'ai compris. La crate noodles-bam est dédiée au format BAM, et l’écosystème noodles couvre aussi d’autres formats bioinfo. Elle gère lecture/écriture BAM et fournit aussi des exemples de lecture complète et de requêtes sur enregistrements. En pratique, c’est souvent un bon choix si tu veux éviter des bindings C autant que possible et rester sur une architecture plus idiomatique Rust.
+
+##### CPTL
+
+**rayon** - https://docs.rs/rayon/latest/rayon/struct.ThreadPoolBuilder.html :
+Son objectif est surtout de faire du data parallelism ou du fork-join. Elle permet de créer un pool personnalisé avec ThreadPoolBuilder, d’exécuter du travail dans ce pool, et fournit join, scope et les itérateurs parallèles.
+
+**crossbeam** - https://docs.rs/crossbeam/latest/crossbeam/thread/struct.Scope.html :
+C'est surtout bien pour executer plusieurs tâches qui empruntent des références locales sans s'occuper de tout ce que ça englobe. Ce n’est pas un thread pool complet comme rayon, mais les scoped threads sont très pratiques pour structurer du parallélisme bas niveau de façon sûre.
